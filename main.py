@@ -80,30 +80,36 @@ class Tickets(Stations):
         elif var==2:
             current_station=input("Enter your Origin Station : ")
             destination=input("Enter your Destination Station : ")
-            final_path=Tickets.path_finder(current_station,destination)
-            print("The path from {} to {} is : {}".format(current_station,destination,final_path))
-            with open("intersections.csv","r") as file:
-                reader=csv.reader(file)
-                for row in reader:
-                    if row[0] in final_path and row[0]!=current_station and row[0]!=destination:
-                        print("Intersection at {}".format(row[0]))
-            fare=(len(final_path)-1)*5
-            print("The total fare is : {}".format(fare))
-            confirm=input("Do you want to proceed with the purchase ? (yes/no) : ")
-            if confirm=="yes":
-                ticketid=Tickets.ticket_id()
-                Tickets.tickets_writer(name,ticketid,current_station,destination,fare)
-                print("Ticket Purchased Successfully")
+            if current_station not in stations or destination not in stations:
+                print("One or both stations are invalid. Please try again.")
                 Tickets.tickets_purchaser()
             else:
-                print("Purchase Cancelled")
-                Tickets.tickets_purchaser()
+                final_path=Tickets.path_finder(current_station,destination)
+                print("The path from {} to {} is : {}".format(current_station,destination,final_path))
+                with open("intersections.csv","r") as file:
+                    reader=csv.reader(file)
+                    for row in reader:
+                        if row[0] in final_path and row[0]!=current_station and row[0]!=destination:
+                            print("Intersection at {}".format(row[0]))
+                fare=(len(final_path)-1)*5
+                print("The total fare is : {}".format(fare))
+                confirm=input("Do you want to proceed with the purchase ? (yes/no) : ")
+                if confirm=="yes":
+                    ticketid=Tickets.ticket_id()
+                    Tickets.tickets_writer(name,ticketid,current_station,destination,fare)
+                    print("Ticket Purchased Successfully")
+                    Tickets.tickets_purchaser()
+                else:
+                    print("Purchase Cancelled")
+                    Tickets.tickets_purchaser()
         elif var==3:
             Tickets.tickets_loader()
             Tickets.tickets_purchaser()
         elif var==4:
             print("Exiting system......")
             exit()
+        else:
+            print("Please enter a valid option")
 Stations.load_stations()
 Stations.load_connections() 
 Tickets.tickets_purchaser()
