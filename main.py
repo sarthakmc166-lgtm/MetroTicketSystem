@@ -55,7 +55,7 @@ class Tickets(Stations):
     @staticmethod
     def path_finder(current_station,destination,path=[]):
         path = path + [current_station]
-        shortest_path = None
+        paths=[]
         if current_station==destination:
             return path
         else:
@@ -63,9 +63,9 @@ class Tickets(Stations):
                 if neighbour.station_name not in path:
                     new_path=Tickets.path_finder(neighbour.station_name, destination, path)
                     if new_path:
-                        if shortest_path is None or len(new_path) < len(shortest_path):
-                            shortest_path = new_path
-            return shortest_path
+                        paths.append(new_path)
+        if paths:
+            return min(paths, key=len)
     @staticmethod
     def tickets_writer(name,ticketid,origin,destination,fare):
         with open("tickets.csv","a",newline='') as file:
